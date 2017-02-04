@@ -65,6 +65,7 @@ class CalCenter
         return _history
     }
     
+    
     func reset(){
         _accumulator = nil
         _history.removeAll()
@@ -114,7 +115,8 @@ class CalCenter
         // 1 ".",
         self.calculatePoint(beginIndex: 0, endIndex: self._tempHistory.count)
         //2 "()" 
-        //3, */, 4 +-
+        //3, */,
+        //4 +-
         //var currentVal :Double? = nil
         //var lastFunc :((Double, Double) -> Double?)? = nil
     
@@ -131,6 +133,7 @@ class CalCenter
         //if lastFunc != nil {
           //  currentVal = lastFunc!(currentVal!, self._accumulator!)
         //}
+        
         return 0
     }
     
