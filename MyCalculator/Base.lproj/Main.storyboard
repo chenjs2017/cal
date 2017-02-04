@@ -27,6 +27,9 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="U"/>
+                                <connections>
+                                    <action selector="touchUndo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qcx-MF-1Gz"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XMe-YF-IoE">
                                 <rect key="frame" x="47" y="614" width="56" height="44"/>
@@ -41,6 +44,9 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="R"/>
+                                <connections>
+                                    <action selector="touchRedo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ogu-re-NiA"/>
+                                </connections>
                             </button>
                             <button opaque="NO" tag="8" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pdG-RA-U5d">
                                 <rect key="frame" x="129" y="325" width="56" height="44"/>

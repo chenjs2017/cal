@@ -24,13 +24,12 @@ class CalCenter
         case Point = "."
         case LeftParentheses = "("
         case RightParentheses = ")"
- 
     }
     
     struct OperationInfo{
         var theOperand : Double?
         var theOperator : Operator?
-        var isCalculated : Bool = false
+        //var isCalculated : Bool = false
         
         init(_ operand:Double?, inputOperator op: Operator?) {
             theOperand = operand
@@ -49,7 +48,6 @@ class CalCenter
         
         Operator.LeftParentheses: Operation.Parentheses,
         Operator.RightParentheses:Operation.Parentheses
-
     ]
     
     private var _leftParenthesesCount = 0;
@@ -59,12 +57,24 @@ class CalCenter
         return _accumulator
     }
     
+    private var _backup: Array <OperationInfo> = []
     private var _tempHistory: Array <OperationInfo> = []
     private var _history: Array <OperationInfo> = []
     var history : Array <OperationInfo> {
         return _history
     }
     
+    func undo(){
+        if (_history.count > 0){
+            _backup.append(_history.remove(at: _history.count-1))
+        }
+    }
+    
+    func redo(){
+        if (_backup.count > 0){
+            _history.append(_backup.remove(at: _backup.count-1))
+        }
+    }
     
     func reset(){
         _accumulator = nil
@@ -72,11 +82,12 @@ class CalCenter
     }
     
     func setOperand(operand:Double){
-        if (_accumulator == nil)
-        {
-            _accumulator = 0
+        if(_history.isEmpty || _history.last!.theOperator != Operator.RightParentheses){
+            if (_accumulator == nil){
+                _accumulator = 0
+            }
+            _accumulator = _accumulator! * 10 + operand
         }
-        _accumulator = _accumulator! * 10 + operand       
     }
   
     func getFuncFromOperator(_ op:Operator?) ->((Double, Double) -> Double?)?{
@@ -93,60 +104,75 @@ class CalCenter
         }
         return rtnVal
     }
-    func calculatePoint(beginIndex begin:Int,endIndex end:Int)
-    {
-        //calculate '.' first
+    
+    func calculateGroup(_ arr:Array<Operator>, beginIndex begin:Int,endIndex end:Int){
         for i in begin..<end {
-            var info = _tempHistory[i]
-            if (!info.isCalculated) && (info.theOperator == Operator.Point) {
-                var next = _tempHistory[i + 1]
-                let foo = getFuncFromOperator(info.theOperator)
-                info.isCalculated = true
-                next.theOperand = foo!(info.theOperand!, next.theOperand!)
+            if (!_tempHistory[i].isCalculated)
+                && (_tempHistory[i].theOperator != nil)
+                && (arr.contains(_tempHistory[i].theOperator!)) {
+                for  j in i+1..<end {
+                    if !_tempHistory[j].isCalculated && _tempHistory[j].theOperand != nil{
+                        _tempHistory[j].theOperand = getFuncFromOperator(_tempHistory[i].theOperator)!(
+                            _tempHistory[i].theOperand!,
+                            _tempHistory[j].theOperand!)
+                        _tempHistory[i].isCalculated = true
+                    }
+                }
             }
         }
     }
-    func getReselut() -> Double?{
-        if _accumulator == nil{
-            return nil
-        }
-        self._tempHistory = self._history
-        
-        // 1 ".",
-        self.calculatePoint(beginIndex: 0, endIndex: self._tempHistory.count)
-        //2 "()" 
-        //3, */,
-        //4 +-
-        //var currentVal :Double? = nil
-        //var lastFunc :((Double, Double) -> Double?)? = nil
     
-        //for info in _history {
-          //  if (currentVal == nil) {
-            //    currentVal = info.theOperand
-            //} else {
-//            //    currentVal = lastFunc! (currentVal!, info.theOperand)
-            //}
-            //if let tmp = info.theOperator {
-              //  lastFunc = getFuncFromOperator(tmp)
-            //}
-        //}
-        //if lastFunc != nil {
-          //  currentVal = lastFunc!(currentVal!, self._accumulator!)
-        //}
-        
-        return 0
+    func getReselut() -> Double?{
+        var rtn :Double? = nil
+        if isOperandAtLast() && self._leftParenthesesCount == 0{
+            self._tempHistory = self._history
+            if (_accumulator != nil){
+                let info = OperationInfo(_accumulator, inputOperator: nil)
+                _tempHistory.append(info )
+            }
+            calculateGroup([Operator.Point], beginIndex: 0, endIndex: _tempHistory.count)
+            for j in 0..<_tempHistory.count {
+                if _tempHistory[j ].theOperator == Operator.RightParentheses {
+                    for i in (0..<j).reversed() {
+                        if (_tempHistory[i].theOperator == Operator.LeftParentheses){
+                            calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: i+1, endIndex: j+1)
+                            calculateGroup([Operator.Add,Operator.Minus], beginIndex: i+1, endIndex: j+1)
+                            _tempHistory[i].isCalculated = true
+                            if (j+1 < _tempHistory.count){
+                                _tempHistory[j+1].theOperand = _tempHistory[j].theOperand
+                                _tempHistory[j].isCalculated = true
+                            }
+                        }
+                    }
+                }
+            }
+            calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: 0, endIndex: _tempHistory.count)
+            calculateGroup([Operator.Add,Operator.Minus], beginIndex: 0, endIndex: _tempHistory.count)
+            rtn = _tempHistory.last!.theOperand
+        }
+        return rtn
+    }
+    
+    func isOperandAtLast() -> Bool {
+        if _accumulator != nil {
+            return true
+        }
+        if _history.last?.theOperator == Operator.RightParentheses {
+            return true
+        }
+        return false
     }
     
     func performOperation(oprtor:Operator){
         if let oprtn = self.operationDic[oprtor] {
             switch oprtn{
             case .BinaryOperation( _) :
-                //can't have 2 '.' in a row
-                if oprtor == Operator.Point && _history.last?.theOperator == Operator.Point{
+                if oprtor == Operator.Point
+                    && (_history.last?.theOperator == Operator.Point
+                        || _history.last?.theOperator == Operator.RightParentheses){
                     break
                 }
-                
-                if _accumulator == nil {
+                if !isOperandAtLast() {
                     break
                 }
                 let info = OperationInfo(accumulator!, inputOperator : oprtor )
@@ -154,12 +180,15 @@ class CalCenter
                 _accumulator = nil
                 
             case .UnaryOperation(let foo) :
-                if _accumulator != nil {
+                if !isOperandAtLast(){
                     _accumulator = foo(_accumulator!)
                 }
             
             case .Parentheses:
                 if oprtor == Operator.LeftParentheses {
+                    if isOperandAtLast(){
+                        break
+                    }
                     _leftParenthesesCount += 1
                 } else {
                     if _leftParenthesesCount == 0 {

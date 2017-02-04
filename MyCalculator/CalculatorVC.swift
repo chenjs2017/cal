@@ -80,6 +80,14 @@ class CalculatorVC: UIViewController {
         displayTextView.text = txt
     }
     
+    @IBAction func touchRedo(_ sender: UIButton) {
+        _center.redo()
+        updateUI()
+    }
+    @IBAction func touchUndo(_ sender: Any) {
+        _center.undo()
+        updateUI()
+    }
     @IBAction func touchOperator(_ sender: UIButton) {
         if let tmp = buttonOperatorDict[sender] {
             _center.performOperation(oprtor: tmp)
@@ -97,10 +105,7 @@ class CalculatorVC: UIViewController {
     }
     
     override func viewDidLoad() {
-        //let a = pow(10, floor(log10(150.0)) + 1)
-        //let b = a;
-        //let s = String(describing: b)
-        //displayTextView.text = s
+    
     }
 }
 
