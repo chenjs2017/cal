@@ -99,7 +99,15 @@ class CalculatorVC: UIViewController {
         updateUI()
     }
     
-    @IBAction func allClear(_ sender: Any) {
+    @IBAction func touchPrew(_ sender: Any) {
+        _center.prewOperand()
+        updateUI()
+    }
+    @IBAction func touchNext(_ sender: Any) {
+        _center.nextOperand()
+        updateUI()
+    }
+    @IBAction func touchAllClear(_ sender: Any) {
         _center.reset()
         updateUI()
     }

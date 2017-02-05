@@ -28,7 +28,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="U"/>
                                 <connections>
-                                    <action selector="touchUndo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qcx-MF-1Gz"/>
+                                    <action selector="touchUndo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DrM-gL-G07"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XMe-YF-IoE">
@@ -37,6 +37,9 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="&lt;"/>
+                                <connections>
+                                    <action selector="touchPrew:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Na7-Jf-YKw"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U8Q-uO-Tfe">
                                 <rect key="frame" x="272" y="614" width="56" height="44"/>
@@ -242,6 +245,9 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="&gt;"/>
+                                <connections>
+                                    <action selector="touchNext:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TX6-6P-lOP"/>
+                                </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="0" textAlignment="right" translatesAutoresizingMaskIntoConstraints="NO" id="mMk-np-5Jd">
                                 <rect key="frame" x="0.0" y="28" width="375" height="163"/>

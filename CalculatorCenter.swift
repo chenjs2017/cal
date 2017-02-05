@@ -29,8 +29,7 @@ class CalCenter
     struct OperationInfo{
         var theOperand : Double?
         var theOperator : Operator?
-        //var isCalculated : Bool = false
-        
+
         init(_ operand:Double?, inputOperator op: Operator?) {
             theOperand = operand
             theOperator = op
@@ -52,6 +51,7 @@ class CalCenter
     
     private var _leftParenthesesCount = 0;
     
+    private var _oldAccumulator: Double?
     private var _accumulator:Double?
     var accumulator: Double? {
         return _accumulator
@@ -64,15 +64,50 @@ class CalCenter
         return _history
     }
     
+    private var _currentOperation:Int?
+    private var _eraseCurrentValue = false
+    
+    func prewOperand(){
+        if _currentOperation == nil {
+            _currentOperation = _history.count
+        }
+        for i in (0..<_currentOperation!).reversed() {
+            if _history[i].theOperand != nil {
+                _currentOperation = i
+                _eraseCurrentValue = true
+                break
+            }
+        }
+    }
+    func nextOperand(){
+        if _currentOperation == nil {
+            return
+        }
+        for i in _currentOperation!+1..<_history.count{
+            if _history[i].theOperand != nil {
+                _currentOperation = i
+                _eraseCurrentValue = true
+                return
+            }
+        }
+        _currentOperation = nil
+    }
     func undo(){
-        if (_history.count > 0){
+        if (_accumulator != nil) {
+            _oldAccumulator = _accumulator
+            _accumulator = nil
+        } else if (_history.count > 0){
             _backup.append(_history.remove(at: _history.count-1))
+            
         }
     }
     
     func redo(){
         if (_backup.count > 0){
             _history.append(_backup.remove(at: _backup.count-1))
+        } else if _oldAccumulator != nil {
+            _accumulator = _oldAccumulator
+            _oldAccumulator = nil
         }
     }
     
@@ -82,11 +117,19 @@ class CalCenter
     }
     
     func setOperand(operand:Double){
-        if(_history.isEmpty || _history.last!.theOperator != Operator.RightParentheses){
-            if (_accumulator == nil){
-                _accumulator = 0
+        if (_currentOperation == nil ){
+            if(_history.isEmpty || _history.last!.theOperator != Operator.RightParentheses){
+                if (_accumulator == nil){
+                    _accumulator = 0
+                }
+                _accumulator = _accumulator! * 10 + operand
             }
-            _accumulator = _accumulator! * 10 + operand
+        } else {
+            if (_eraseCurrentValue){
+                _eraseCurrentValue = false
+                _history[_currentOperation!].theOperand = 0
+            }
+            _history[_currentOperation!].theOperand = _history[_currentOperation!].theOperand! * 10 + operand
         }
     }
   
@@ -106,19 +149,23 @@ class CalCenter
     }
     
     func calculateGroup(_ arr:Array<Operator>, beginIndex begin:Int,endIndex end:Int){
-        for i in begin..<end {
-            if (!_tempHistory[i].isCalculated)
-                && (_tempHistory[i].theOperator != nil)
-                && (arr.contains(_tempHistory[i].theOperator!)) {
-                for  j in i+1..<end {
-                    if !_tempHistory[j].isCalculated && _tempHistory[j].theOperand != nil{
-                        _tempHistory[j].theOperand = getFuncFromOperator(_tempHistory[i].theOperator)!(
+        var i = begin
+        var varEnd = end
+      
+        while (i < varEnd) {
+            if (_tempHistory[i].theOperator != nil)
+                && arr.contains(_tempHistory[i].theOperator!) {
+                if _tempHistory[i + 1].theOperand != nil{
+                    _tempHistory[i + 1].theOperand =
+                        getFuncFromOperator(_tempHistory[i].theOperator)!(
                             _tempHistory[i].theOperand!,
-                            _tempHistory[j].theOperand!)
-                        _tempHistory[i].isCalculated = true
-                    }
+                            _tempHistory[i+1].theOperand!)
+                    _tempHistory.remove(at: i)
+                                        i = i - 1
+                    varEnd = varEnd - 1
                 }
             }
+            i = i + 1
         }
     }
     
@@ -131,20 +178,28 @@ class CalCenter
                 _tempHistory.append(info )
             }
             calculateGroup([Operator.Point], beginIndex: 0, endIndex: _tempHistory.count)
-            for j in 0..<_tempHistory.count {
-                if _tempHistory[j ].theOperator == Operator.RightParentheses {
-                    for i in (0..<j).reversed() {
+            var j = 0
+            while j < _tempHistory.count {
+                if _tempHistory[j].theOperator == Operator.RightParentheses {
+                    var i = j - 1
+                    while (i >= 0) {
                         if (_tempHistory[i].theOperator == Operator.LeftParentheses){
+                            let oldCount = _tempHistory.count
                             calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: i+1, endIndex: j+1)
                             calculateGroup([Operator.Add,Operator.Minus], beginIndex: i+1, endIndex: j+1)
-                            _tempHistory[i].isCalculated = true
-                            if (j+1 < _tempHistory.count){
+                            _tempHistory.remove(at: i)
+                            j = j - (oldCount - _tempHistory.count)
+                            if (j + 1 < _tempHistory.count){
                                 _tempHistory[j+1].theOperand = _tempHistory[j].theOperand
-                                _tempHistory[j].isCalculated = true
+                               _tempHistory.remove(at: j)
                             }
+                            j = j - 1
+                            break
                         }
+                        i = i - 1
                     }
                 }
+                j = j + 1
             }
             calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: 0, endIndex: _tempHistory.count)
             calculateGroup([Operator.Add,Operator.Minus], beginIndex: 0, endIndex: _tempHistory.count)
@@ -175,7 +230,7 @@ class CalCenter
                 if !isOperandAtLast() {
                     break
                 }
-                let info = OperationInfo(accumulator!, inputOperator : oprtor )
+                let info = OperationInfo(accumulator, inputOperator : oprtor )
                 _history.append (info)
                 _accumulator = nil
                 
