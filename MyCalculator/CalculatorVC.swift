@@ -18,8 +18,9 @@ class CalculatorVC: UIViewController {
     @IBOutlet weak var divideButton: UIButton!
     @IBOutlet weak var rightParentheses: UIButton!
     @IBOutlet weak var leftParentheses: UIButton!
-    @IBOutlet weak var negateButton: UIButton!
     @IBOutlet weak var pointButton: UIButton!
+    @IBOutlet weak var pwrButton: UIButton!
+    
     
     private let _center = CalCenter()
     
@@ -31,10 +32,11 @@ class CalculatorVC: UIViewController {
             _buttonOperatorDict[minusButton] = CalCenter.Operator.Minus
             _buttonOperatorDict[addButton] = CalCenter.Operator.Add
             _buttonOperatorDict[divideButton] = CalCenter.Operator.Divide
-            _buttonOperatorDict[negateButton] = CalCenter.Operator.Negate
             _buttonOperatorDict[pointButton] = CalCenter.Operator.Point
             _buttonOperatorDict[leftParentheses] = CalCenter.Operator.LeftParentheses
             _buttonOperatorDict[rightParentheses] = CalCenter.Operator.RightParentheses
+            _buttonOperatorDict[pwrButton] = CalCenter.Operator.Exponent
+            
         }
         return _buttonOperatorDict
     }
@@ -60,24 +62,36 @@ class CalculatorVC: UIViewController {
 
     private func updateUI(){
         var txt = ""
+        var i = 0
+        var begin = -1
+        var length = 0
         for info in _center.history {
             if let tmp = info.theOperand {
-                txt += getDoubleString(tmp)
+                let t = getDoubleString(tmp)
+                if (i == _center.currentIndex) {
+                    begin = txt.characters.count
+                    length = t.characters.count                }
+                txt += t
+                
+                
             }
             if let tmp = info.theOperator {
                 txt += tmp.rawValue
             }
-        }
-        
-        if let tmp = _center.accumulator {
-            txt += getDoubleString(tmp )
+            
+            i = i + 1
         }
         
         if let tmp = _center.getReselut(){
             txt += "="
             txt += getDoubleString(tmp)
         }
-        displayTextView.text = txt
+        let attrString = NSMutableAttributedString(string: txt,
+                                                   attributes: [ NSFontAttributeName: UIFont.systemFont(ofSize: 20)])
+        if (begin > -1) {
+            attrString.setAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 24)], range: NSRange(location: begin,length: length))
+        }
+        displayTextView.attributedText = attrString
     }
     
     @IBAction func touchRedo(_ sender: UIButton) {
@@ -107,11 +121,14 @@ class CalculatorVC: UIViewController {
         _center.nextOperand()
         updateUI()
     }
+    
     @IBAction func touchAllClear(_ sender: Any) {
         _center.reset()
         updateUI()
     }
     
+    @IBAction func openTouched(_ sender: Any) {
+    }
     override func viewDidLoad() {
     
     }

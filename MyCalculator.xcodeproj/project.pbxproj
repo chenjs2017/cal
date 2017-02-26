@@ -79,6 +79,7 @@
 		093D6BCF1E3E49EC009584D3 = {
 			isa = PBXGroup;
 			children = (
+				093D6BE21E3E49EC009584D3 /* MyCalculator.xcdatamodeld */,
 				093D6BDA1E3E49EC009584D3 /* MyCalculator */,
 				093D6BF21E3E49EC009584D3 /* MyCalculatorTests */,
 				093D6BFD1E3E49EC009584D3 /* MyCalculatorUITests */,
@@ -131,7 +132,6 @@
 				093D6BDB1E3E49EC009584D3 /* AppDelegate.swift */,
 				093D6BE51E3E49EC009584D3 /* Assets.xcassets */,
 				093D6BEA1E3E49EC009584D3 /* Info.plist */,
-				093D6BE21E3E49EC009584D3 /* MyCalculator.xcdatamodeld */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -509,6 +509,7 @@
 				093D6C051E3E49EC009584D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		093D6C061E3E49EC009584D3 /* Build configuration list for PBXNativeTarget "MyCalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -517,6 +518,7 @@
 				093D6C081E3E49EC009584D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		093D6C091E3E49EC009584D3 /* Build configuration list for PBXNativeTarget "MyCalculatorUITests" */ = {
 			isa = XCConfigurationList;
@@ -525,6 +527,7 @@
 				093D6C0B1E3E49EC009584D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
@@ -535,7 +538,8 @@
 				093D6BE31E3E49EC009584D3 /* MyCalculator.xcdatamodel */,
 			);
 			currentVersion = 093D6BE31E3E49EC009584D3 /* MyCalculator.xcdatamodel */;
-			path = MyCalculator.xcdatamodeld;
+			name = MyCalculator.xcdatamodeld;
+			path = MyCalculator/MyCalculator.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
