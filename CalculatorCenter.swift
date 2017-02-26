@@ -25,6 +25,9 @@ class CalCenter
         case LeftParentheses = "("
         case RightParentheses = ")"
         case Exponent = "^"
+        case Sqrt = "√"
+        case Qbrt = "∛"
+        case Divid100 = "%"
     }
     
     struct OperationInfo{
@@ -40,6 +43,9 @@ class CalCenter
         Operator.Point : Operation.BinaryOperation({$0 + $1 / pow(10, floor(log10($1)) + 1)}),
         Operator.Exponent : Operation.BinaryOperation({pow($0, $1)}),
         Operator.Negate : Operation.UnaryOperation({0 - $0}),
+        Operator.Sqrt : Operation.UnaryOperation({sqrt($0)}),
+        Operator.Qbrt : Operation.UnaryOperation({pow($0, (1.0/3.0))}),
+        Operator.Divid100 : Operation.UnaryOperation({$0 / 100}),
         Operator.LeftParentheses: Operation.Parentheses,
         Operator.RightParentheses:Operation.Parentheses
     ]
@@ -214,11 +220,12 @@ class CalCenter
                     _history.append(OperationInfo(theOperand: nil, theOperator: oprtor))
                 }
             case .UnaryOperation(let foo) :
-                if var info = _history.last{
-                    if info.theOperand != nil {
-                        info.theOperand = foo(info.theOperand!)
-                    }
+                if _history.isEmpty{
+                    break;
                 }
+                let current = _history.count - 1 - _reverseIndex
+                _history[current].theOperand = foo(_history[current].theOperand!)
+                
             case .Parentheses:
                 if oprtor == Operator.LeftParentheses {
                     if (_history.isEmpty

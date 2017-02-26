@@ -20,6 +20,10 @@ class CalculatorVC: UIViewController {
     @IBOutlet weak var leftParentheses: UIButton!
     @IBOutlet weak var pointButton: UIButton!
     @IBOutlet weak var pwrButton: UIButton!
+    @IBOutlet weak var negateButton: UIButton!
+    @IBOutlet weak var sqrtButton: UIButton!
+    @IBOutlet weak var qbrtButton: UIButton!
+    @IBOutlet weak var divide100: UIButton!
     
     
     private let _center = CalCenter()
@@ -36,7 +40,10 @@ class CalculatorVC: UIViewController {
             _buttonOperatorDict[leftParentheses] = CalCenter.Operator.LeftParentheses
             _buttonOperatorDict[rightParentheses] = CalCenter.Operator.RightParentheses
             _buttonOperatorDict[pwrButton] = CalCenter.Operator.Exponent
-            
+            _buttonOperatorDict[negateButton] = CalCenter.Operator.Negate
+            _buttonOperatorDict[sqrtButton] = CalCenter.Operator.Sqrt
+            _buttonOperatorDict[qbrtButton] = CalCenter.Operator.Qbrt
+            _buttonOperatorDict[divide100] = CalCenter.Operator.Divid100
         }
         return _buttonOperatorDict
     }
