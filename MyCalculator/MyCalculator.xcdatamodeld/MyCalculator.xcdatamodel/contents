@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D32" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="OperationInfo" representedClassName=".OperationInfo" syncable="YES" codeGenerationType="class">
-        <attribute name="theOperand" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+    <entity name="FormulaInfo" representedClassName="FormulaInfo" syncable="YES">
+        <attribute name="formulaIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="formulaName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isFavorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="operationInfos" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="OperationInfo" inverseName="formula" inverseEntity="OperationInfo" syncable="YES"/>
+    </entity>
+    <entity name="OperationInfo" representedClassName="OperationInfo" syncable="YES">
+        <attribute name="theOperand" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="theOperator" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="formula" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FormulaInfo" inverseName="operationInfos" inverseEntity="FormulaInfo" syncable="YES"/>
     </entity>
     <elements>
-        <element name="OperationInfo" positionX="-63" positionY="-18" width="128" height="60"/>
+        <element name="FormulaInfo" positionX="-135" positionY="-216" width="128" height="103"/>
+        <element name="OperationInfo" positionX="151" positionY="-9" width="128" height="88"/>
     </elements>
 </model>

@@ -27,7 +27,10 @@ class CalculatorVC: UIViewController {
     
     
     private let _center = CalCenter()
-    
+    private weak var _managedContext = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    private var _currentFormula: FormulaInfo? = nil
+   
+
     //map button to Operator
     private var _buttonOperatorDict = Dictionary<UIButton, CalCenter.Operator>()
     private var buttonOperatorDict :Dictionary<UIButton, CalCenter.Operator>{
@@ -48,96 +51,80 @@ class CalculatorVC: UIViewController {
         return _buttonOperatorDict
     }
     
-    private func getDoubleString(_ doubleVal:Double) -> String{
-        var rtn : String = ""
-        let intVal = Int(doubleVal)
-        if (intVal < 0){
-            rtn += "("
-        }
-        
-        if doubleVal - Double (intVal) == 0 {
-            rtn += String (intVal)
-        } else {
-            rtn += String (doubleVal)
-        }
-        
-        if (intVal < 0){
-            rtn += ")"
-        }
-        return rtn
-    }
+   
 
-    private func updateUI(){
-        var txt = ""
-        var i = 0
-        var begin = -1
-        var length = 0
-        for info in _center.history {
-            if let tmp = info.theOperand {
-                let t = getDoubleString(tmp)
-                if (i == _center.currentIndex) {
-                    begin = txt.characters.count
-                    length = t.characters.count                }
-                txt += t
-                
-                
-            }
-            if let tmp = info.theOperator {
-                txt += tmp.rawValue
-            }
-            
-            i = i + 1
+    private func updateUI(_ autoSave:Bool){
+        let result = _center.toString()
+        
+        let attrString = NSMutableAttributedString(string: result.0,
+                                                   attributes: [ NSFontAttributeName: UIFont.systemFont(ofSize: 18)])
+        if (result.1 != nil) {
+            attrString.setAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 20)], range: (result.1)! )
         }
         
-        if let tmp = _center.getReselut(){
-            txt += "="
-            txt += getDoubleString(tmp)
-        }
-        let attrString = NSMutableAttributedString(string: txt,
-                                                   attributes: [ NSFontAttributeName: UIFont.systemFont(ofSize: 20)])
-        if (begin > -1) {
-            attrString.setAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 24)], range: NSRange(location: begin,length: length))
-        }
         displayTextView.attributedText = attrString
+        if (autoSave) {
+            _currentFormula?.saveOperationInfos(_center.currentOperationList)
+        }
     }
     
     @IBAction func touchRedo(_ sender: UIButton) {
         _center.redo()
-        updateUI()
+        updateUI(true)
     }
     @IBAction func touchUndo(_ sender: Any) {
         _center.undo()
-        updateUI()
+        updateUI(true)
     }
     @IBAction func touchOperator(_ sender: UIButton) {
         if let tmp = buttonOperatorDict[sender] {
             _center.performOperation(oprtor: tmp)
-            updateUI()
+            updateUI(true)
         }
     }
     @IBAction private func touchDigit(_ sender: UIButton) {
         _center.setOperand(operand: Double(sender.tag))
-        updateUI()
+        updateUI(true)
     }
     
     @IBAction func touchPrew(_ sender: Any) {
         _center.prewOperand()
-        updateUI()
+        updateUI(false)
     }
     @IBAction func touchNext(_ sender: Any) {
         _center.nextOperand()
-        updateUI()
+        updateUI(false)
     }
     
     @IBAction func touchAllClear(_ sender: Any) {
+        _currentFormula = FormulaInfo.newFormula(managedContext: _managedContext!)
         _center.reset()
-        updateUI()
+        updateUI(false)
     }
     
     @IBAction func openTouched(_ sender: Any) {
     }
     override func viewDidLoad() {
+        resetUI(FormulaInfo.getLatestOrNew(managedContext: _managedContext!))
+    }
     
+    func resetUI(_ formular: FormulaInfo?){
+        if formular == nil {
+            return
+        }
+        
+        _currentFormula = formular
+        _center.initByHistory((_currentFormula?.getCalOperationInfo())!)
+        updateUI(false)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "showList"){
+            
+            let na = segue.destination as! UINavigationController
+            let tbc = na.childViewControllers[0] as! FormulaTVC
+            tbc.setCalVC(self)
+        }
     }
 }
 

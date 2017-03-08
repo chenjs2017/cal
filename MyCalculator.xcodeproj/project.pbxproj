@@ -15,6 +15,12 @@
 		093D6BF41E3E49EC009584D3 /* MyCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093D6BF31E3E49EC009584D3 /* MyCalculatorTests.swift */; };
 		093D6BFF1E3E49EC009584D3 /* MyCalculatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093D6BFE1E3E49EC009584D3 /* MyCalculatorUITests.swift */; };
 		093D6C0E1E40A710009584D3 /* CalculatorCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093D6C0D1E40A710009584D3 /* CalculatorCenter.swift */; };
+		0960A82F1E647D560043B456 /* OperationInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0960A82B1E647D560043B456 /* OperationInfo+CoreDataClass.swift */; };
+		0960A8301E647D560043B456 /* OperationInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0960A82C1E647D560043B456 /* OperationInfo+CoreDataProperties.swift */; };
+		0960A8341E65F0E10043B456 /* FormulaTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0960A8331E65F0E10043B456 /* FormulaTVC.swift */; };
+		0960A8361E66FB510043B456 /* FormulaTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0960A8351E66FB510043B456 /* FormulaTVCell.swift */; };
+		09FAC39F1E69A5FC0097118B /* FormulaInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FAC39D1E69A5FC0097118B /* FormulaInfo+CoreDataClass.swift */; };
+		09FAC3A01E69A5FC0097118B /* FormulaInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FAC39E1E69A5FC0097118B /* FormulaInfo+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +55,12 @@
 		093D6BFE1E3E49EC009584D3 /* MyCalculatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCalculatorUITests.swift; sourceTree = "<group>"; };
 		093D6C001E3E49EC009584D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		093D6C0D1E40A710009584D3 /* CalculatorCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalculatorCenter.swift; path = ../CalculatorCenter.swift; sourceTree = "<group>"; };
+		0960A82B1E647D560043B456 /* OperationInfo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OperationInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
+		0960A82C1E647D560043B456 /* OperationInfo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OperationInfo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		0960A8331E65F0E10043B456 /* FormulaTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormulaTVC.swift; sourceTree = "<group>"; };
+		0960A8351E66FB510043B456 /* FormulaTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormulaTVCell.swift; sourceTree = "<group>"; };
+		09FAC39D1E69A5FC0097118B /* FormulaInfo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FormulaInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
+		09FAC39E1E69A5FC0097118B /* FormulaInfo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FormulaInfo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,10 +88,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		092044271E63417500695182 /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				09FAC39D1E69A5FC0097118B /* FormulaInfo+CoreDataClass.swift */,
+				09FAC39E1E69A5FC0097118B /* FormulaInfo+CoreDataProperties.swift */,
+				0960A82B1E647D560043B456 /* OperationInfo+CoreDataClass.swift */,
+				0960A82C1E647D560043B456 /* OperationInfo+CoreDataProperties.swift */,
+				093D6BE21E3E49EC009584D3 /* MyCalculator.xcdatamodeld */,
+			);
+			name = "Core Data";
+			sourceTree = "<group>";
+		};
 		093D6BCF1E3E49EC009584D3 = {
 			isa = PBXGroup;
 			children = (
-				093D6BE21E3E49EC009584D3 /* MyCalculator.xcdatamodeld */,
 				093D6BDA1E3E49EC009584D3 /* MyCalculator */,
 				093D6BF21E3E49EC009584D3 /* MyCalculatorTests */,
 				093D6BFD1E3E49EC009584D3 /* MyCalculatorUITests */,
@@ -100,9 +123,9 @@
 		093D6BDA1E3E49EC009584D3 /* MyCalculator */ = {
 			isa = PBXGroup;
 			children = (
-				093D6C0D1E40A710009584D3 /* CalculatorCenter.swift */,
-				093D6BDD1E3E49EC009584D3 /* CalculatorVC.swift */,
-				093D6BDF1E3E49EC009584D3 /* Main.storyboard */,
+				09FAC3A11E69BF430097118B /* UI */,
+				09FAC3A21E69BF8A0097118B /* logic */,
+				092044271E63417500695182 /* Core Data */,
 				093D6C0C1E3E6E06009584D3 /* Supporting Files */,
 			);
 			path = MyCalculator;
@@ -134,6 +157,25 @@
 				093D6BEA1E3E49EC009584D3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		09FAC3A11E69BF430097118B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				0960A8331E65F0E10043B456 /* FormulaTVC.swift */,
+				0960A8351E66FB510043B456 /* FormulaTVCell.swift */,
+				093D6BDD1E3E49EC009584D3 /* CalculatorVC.swift */,
+				093D6BDF1E3E49EC009584D3 /* Main.storyboard */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		09FAC3A21E69BF8A0097118B /* logic */ = {
+			isa = PBXGroup;
+			children = (
+				093D6C0D1E40A710009584D3 /* CalculatorCenter.swift */,
+			);
+			name = logic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,6 +246,7 @@
 				TargetAttributes = {
 					093D6BD71E3E49EC009584D3 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 9RX5ZJE6LV;
 						ProvisioningStyle = Automatic;
 					};
 					093D6BEE1E3E49EC009584D3 = {
@@ -269,10 +312,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0960A8361E66FB510043B456 /* FormulaTVCell.swift in Sources */,
 				093D6C0E1E40A710009584D3 /* CalculatorCenter.swift in Sources */,
 				093D6BDE1E3E49EC009584D3 /* CalculatorVC.swift in Sources */,
+				09FAC3A01E69A5FC0097118B /* FormulaInfo+CoreDataProperties.swift in Sources */,
+				09FAC39F1E69A5FC0097118B /* FormulaInfo+CoreDataClass.swift in Sources */,
+				0960A8341E65F0E10043B456 /* FormulaTVC.swift in Sources */,
+				0960A82F1E647D560043B456 /* OperationInfo+CoreDataClass.swift in Sources */,
 				093D6BE41E3E49EC009584D3 /* MyCalculator.xcdatamodeld in Sources */,
 				093D6BDC1E3E49EC009584D3 /* AppDelegate.swift in Sources */,
+				0960A8301E647D560043B456 /* OperationInfo+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,24 +464,28 @@
 		093D6C041E3E49EC009584D3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 9RX5ZJE6LV;
 				INFOPLIST_FILE = MyCalculator/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jschen.MyCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		093D6C051E3E49EC009584D3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 9RX5ZJE6LV;
 				INFOPLIST_FILE = MyCalculator/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jschen.MyCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -538,8 +591,7 @@
 				093D6BE31E3E49EC009584D3 /* MyCalculator.xcdatamodel */,
 			);
 			currentVersion = 093D6BE31E3E49EC009584D3 /* MyCalculator.xcdatamodel */;
-			name = MyCalculator.xcdatamodeld;
-			path = MyCalculator/MyCalculator.xcdatamodeld;
+			path = MyCalculator.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

@@ -6,14 +6,16 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--CalculatorVC-->
+        <!--Main-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CalculatorVC" customModule="MyCalculator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="calVC" title="Main" id="BYZ-38-t0r" customClass="CalculatorVC" customModule="MyCalculator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -27,7 +29,7 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mMk-np-5Jd">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="104"/>
-                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <attributedString key="attributedText"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
@@ -98,6 +100,9 @@
                                                         </state>
                                                         <connections>
                                                             <action selector="openTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="x8e-6G-fEw"/>
+                                                            <segue destination="Ahw-3y-EmQ" kind="popoverPresentation" identifier="showList" animates="NO" popoverAnchorView="28L-rD-6fq" id="UmK-5L-PCd">
+                                                                <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                                            </segue>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="duS-a0-hIN">
@@ -403,7 +408,117 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6575.625" y="-981.33802816901414"/>
+            <point key="canvasLocation" x="-6184" y="-1158"/>
+        </scene>
+        <!--FormulaTVC-->
+        <scene sceneID="wJs-yY-Gb6">
+            <objects>
+                <tableViewController id="yTw-cv-keH" customClass="FormulaTVC" customModule="MyCalculator" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" pagingEnabled="YES" dataMode="prototypes" style="plain" separatorStyle="default" sectionIndexMinimumDisplayRowCount="2" allowsSelection="NO" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" id="TT5-PZ-f4x">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <inset key="scrollIndicatorInsets" minX="1" minY="1" maxX="1" maxY="1"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="formula" rowHeight="56" id="HwW-Qh-Eb3" customClass="FormulaTVCell" customModule="MyCalculator">
+                                <rect key="frame" x="0.0" y="28" width="320" height="56"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HwW-Qh-Eb3" id="Mwj-Ix-O3r">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6hT-YL-1H6">
+                                            <rect key="frame" x="8" y="10" width="30" height="35"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="30" id="u4S-uS-SW7"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                            <state key="normal" title=" ★ "/>
+                                            <connections>
+                                                <action selector="touchFavoriteButton:" destination="HwW-Qh-Eb3" eventType="touchUpInside" id="IFY-6H-oFV"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tk4-Hk-Uyh">
+                                            <rect key="frame" x="40" y="11" width="84" height="35"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="84" id="8E6-TM-cft"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                            <state key="normal" title="inch &gt; cm"/>
+                                            <connections>
+                                                <action selector="touchFormulaName:" destination="HwW-Qh-Eb3" eventType="touchUpInside" id="T9d-rq-kl9"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yKt-R7-hGS">
+                                            <rect key="frame" x="132" y="9" width="180" height="39"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                            <state key="normal" title="1+2=5"/>
+                                            <connections>
+                                                <action selector="touchFormulaButton:" destination="HwW-Qh-Eb3" eventType="touchUpInside" id="L4a-NC-MqO"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Tk4-Hk-Uyh" firstAttribute="top" secondItem="Mwj-Ix-O3r" secondAttribute="topMargin" constant="3" id="AYy-4A-r7y"/>
+                                        <constraint firstItem="6hT-YL-1H6" firstAttribute="centerY" secondItem="Mwj-Ix-O3r" secondAttribute="centerY" id="PLY-rE-rC5"/>
+                                        <constraint firstItem="6hT-YL-1H6" firstAttribute="leading" secondItem="Mwj-Ix-O3r" secondAttribute="leadingMargin" id="TPY-h7-K4X"/>
+                                        <constraint firstItem="yKt-R7-hGS" firstAttribute="leading" secondItem="Tk4-Hk-Uyh" secondAttribute="trailing" constant="8" symbolic="YES" id="TWZ-HR-EsI"/>
+                                        <constraint firstItem="yKt-R7-hGS" firstAttribute="top" secondItem="Mwj-Ix-O3r" secondAttribute="topMargin" constant="1" id="avN-aA-n5u"/>
+                                        <constraint firstItem="yKt-R7-hGS" firstAttribute="baseline" secondItem="Tk4-Hk-Uyh" secondAttribute="firstBaseline" id="bCS-Rk-2v6"/>
+                                        <constraint firstItem="Tk4-Hk-Uyh" firstAttribute="baseline" secondItem="yKt-R7-hGS" secondAttribute="firstBaseline" id="eY9-am-eAD"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="yKt-R7-hGS" secondAttribute="trailing" id="pCx-GB-AyI"/>
+                                        <constraint firstItem="Tk4-Hk-Uyh" firstAttribute="leading" secondItem="6hT-YL-1H6" secondAttribute="trailing" constant="2" id="sSJ-2g-rOt"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="favoriteBtn" destination="6hT-YL-1H6" id="Y6a-C1-qk5"/>
+                                    <outlet property="formularButton" destination="yKt-R7-hGS" id="WTk-WD-g9X"/>
+                                    <outlet property="nameButton" destination="Tk4-Hk-Uyh" id="eKC-zO-AI8"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="yTw-cv-keH" id="UGa-Zc-INq"/>
+                            <outlet property="delegate" destination="yTw-cv-keH" id="NhD-Ma-khr"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="cKY-Ra-KZw">
+                        <barButtonItem key="leftBarButtonItem" title="&lt;back" id="BV5-wM-bPC">
+                            <connections>
+                                <action selector="touchBackBtn:" destination="yTw-cv-keH" id="8cE-yF-Skv"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="+" id="Lxe-jG-FUf">
+                            <connections>
+                                <action selector="touchNewBtn:" destination="yTw-cv-keH" id="xrY-g1-KcR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GMV-qK-Fv8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4689.375" y="-1159.8591549295775"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="zPB-7h-Bua">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ahw-3y-EmQ" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="PWs-li-V4O">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="yTw-cv-keH" kind="relationship" relationship="rootViewController" id="Y9U-56-KQF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d66-OZ-9i0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5465.625" y="-1159.8591549295775"/>
         </scene>
     </scenes>
 </document>

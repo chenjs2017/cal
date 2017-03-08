@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import CoreData
+
 class CalCenter
 {
     enum Operation{
@@ -30,7 +32,7 @@ class CalCenter
         case Divid100 = "%"
     }
     
-    struct OperationInfo{
+    struct OprationInfo{
         var theOperand : Double?
         var theOperator : Operator?
     }
@@ -52,34 +54,36 @@ class CalCenter
     
     private var _leftParenthesesCount = 0;
     
-    private var _backup: Array <OperationInfo> = []
-    private var _tempHistory: Array <OperationInfo> = []
-    private var _history: Array <OperationInfo> = []
-    var history : Array <OperationInfo> {
-        return _history
+    private var _backupOperationList: Array <OprationInfo> = []
+    private var _tempOperationList: Array <OprationInfo> = []
+    private var _currentOperationList: Array <OprationInfo> = []
+    
+        
+    var currentOperationList : Array <OprationInfo> {
+        return _currentOperationList
     }
     
     private var _reverseIndex = 0
-    var currentIndex:Int{
-        return _history.count - 1 - _reverseIndex
+    private var currentIndex:Int{
+        return _currentOperationList.count - 1 - _reverseIndex
     }
     private var _eraseCurrentValue = false
     
     func prewOperand(){
-        let current = _history.count - 1 - _reverseIndex
+        let current = _currentOperationList.count - 1 - _reverseIndex
         for i in (0..<current).reversed() {
-            if _history[i].theOperand != nil {
-                _reverseIndex = _history.count - 1 - i
+            if _currentOperationList[i].theOperand != nil {
+                _reverseIndex = _currentOperationList.count - 1 - i
                 _eraseCurrentValue = true
                 break
             }
         }
     }
     func nextOperand(){
-        let current = _history.count - 1 - _reverseIndex
-        for i in current + 1..<_history.count{
-            if _history[i].theOperand != nil {
-                _reverseIndex = _history.count - 1 - i
+        let current = _currentOperationList.count - 1 - _reverseIndex
+        for i in current + 1..<_currentOperationList.count{
+            if _currentOperationList[i].theOperand != nil {
+                _reverseIndex = _currentOperationList.count - 1 - i
                 _eraseCurrentValue = true
                 return
             }
@@ -87,39 +91,55 @@ class CalCenter
     }
     
     func undo(){
-        if !_history.isEmpty {
-            _backup.append(_history.removeLast())
+        if !_currentOperationList.isEmpty {
+            _backupOperationList.append(_currentOperationList.removeLast())
         }
     }
     
     func redo(){
-        if !_backup.isEmpty {
-            _history.append(_backup.removeLast())
+        if !_backupOperationList.isEmpty {
+            _currentOperationList.append(_backupOperationList.removeLast())
         }
     }
     
     func reset(){
-        _history.removeAll()
+        _currentOperationList.removeAll()
         _reverseIndex = 0
+       
+    }
+    
+    func initByHistory(_ arr: Array<OprationInfo>){
+        _currentOperationList = arr
+        _reverseIndex = 0
+        //calculate left parenthesis
+        for info in arr {
+            if info.theOperator == Operator.LeftParentheses {
+                self._leftParenthesesCount += 1
+            } else if (info.theOperator == Operator.RightParentheses) {
+                self._leftParenthesesCount -= 1
+            }
+        }
     }
     
     func setOperand(operand:Double){
-        if(_history.isEmpty || (_history.last!.theOperator != nil) && (_history.last!.theOperator != Operator.RightParentheses)){
-            let info = OperationInfo(theOperand: operand, theOperator: nil)
-            _history.append(info)
+        if(_currentOperationList.isEmpty
+            || (_currentOperationList.last!.theOperator != nil)
+            && (_currentOperationList.last!.theOperator != Operator.RightParentheses)){
+            let info = OprationInfo(theOperand: operand, theOperator: nil)
+            _currentOperationList.append(info)
             _eraseCurrentValue = false
             
         } else {
-            let current = _history.count - 1 - _reverseIndex
+            let current = _currentOperationList.count - 1 - _reverseIndex
             if (_eraseCurrentValue){
                 _eraseCurrentValue = false
-                _history[current].theOperand = 0
+                _currentOperationList[current].theOperand = 0
             }
-            _history[current].theOperand = _history[current].theOperand! * 10 + operand
+            _currentOperationList[current].theOperand = _currentOperationList[current].theOperand! * 10 + operand
         }
     }
   
-    func getFuncFromOperator(_ op:Operator?) ->((Double, Double) -> Double?)?{
+    private func getFuncFromOperator(_ op:Operator?) ->((Double, Double) -> Double?)?{
         var rtnVal:((Double, Double) ->Double)? = nil
         if op != nil {
             if let oprn = self.operationDic[op!]{
@@ -134,70 +154,71 @@ class CalCenter
         return rtnVal
     }
     
-    func calculateGroup(_ arr:Array<Operator>, beginIndex begin:Int,endIndex end:Int){
+    private func calculateGroup(_ arr:Array<Operator>, beginIndex begin:Int,endIndex end:Int){
         var i = begin
         var varEnd = end
-      
         while (i < varEnd) {
-            if (_tempHistory[i].theOperator != nil)
-                && arr.contains(_tempHistory[i].theOperator!) {
-                if _tempHistory[i + 1].theOperand != nil{
-                    _tempHistory[i + 1].theOperand =
-                        getFuncFromOperator(_tempHistory[i].theOperator)!(
-                            _tempHistory[i].theOperand!,
-                            _tempHistory[i+1].theOperand!)
-                    _tempHistory.remove(at: i)
-                                        i = i - 1
-                    varEnd = varEnd - 1
+            if (_tempOperationList[i].theOperator != nil)
+                && arr.contains(_tempOperationList[i].theOperator!) {
+                if _tempOperationList[i + 1].theOperand != nil
+                    && _tempOperationList[i].theOperand != nil {
+                    _tempOperationList[i + 1].theOperand =
+                        getFuncFromOperator(_tempOperationList[i].theOperator)!(
+                            _tempOperationList[i].theOperand!,
+                            _tempOperationList[i+1].theOperand!)
+                    _tempOperationList.remove(at: i)
+                    i -= 1
+                    varEnd -= 1
                 }
             }
-            i = i + 1
+            i += 1
         }
+    }
+    
+    private func calculateGroupAndGetChange(_ arr:Array<Operator>, beginIndex begin:Int,endIndex end:Int) -> Int {
+        let count = _tempOperationList.count
+        calculateGroup( arr, beginIndex: begin, endIndex: end )
+        return count - _tempOperationList.count
     }
     
     func getReselut() -> Double?{
         var rtn :Double? = nil
-        if (_history.last?.theOperator == nil || _history.last?.theOperator == Operator.RightParentheses)
-            && self._leftParenthesesCount == 0 && _history.count > 1{
-            self._tempHistory = self._history
-            calculateGroup([Operator.Point], beginIndex: 0, endIndex: _tempHistory.count)
+        if (_currentOperationList.last?.theOperator == nil
+            || _currentOperationList.last?.theOperator == Operator.RightParentheses)
+            && self._leftParenthesesCount == 0 && _currentOperationList.count > 1{
+            
+            self._tempOperationList = _currentOperationList
+            calculateGroup([Operator.Point], beginIndex: 0, endIndex: _tempOperationList.count)
             var j = 0
-            while j < _tempHistory.count {
-                if _tempHistory[j].theOperator == Operator.RightParentheses {
+            while j < _tempOperationList.count {
+                if _tempOperationList[j].theOperator == Operator.RightParentheses {
                     var i = j - 1
                     while (i >= 0) {
-                        if (_tempHistory[i].theOperator == Operator.LeftParentheses){
-                            var oldCount = _tempHistory.count
-                            calculateGroup([Operator.Exponent], beginIndex: 0, endIndex: _tempHistory.count)
-                            j = j - (oldCount - _tempHistory.count)
+                        if (_tempOperationList[i].theOperator == Operator.LeftParentheses){
+                            j -= calculateGroupAndGetChange([Operator.Exponent], beginIndex: i+1, endIndex: j+1)
+                            j -= calculateGroupAndGetChange([Operator.Mutiply,Operator.Divide], beginIndex: i+1, endIndex: j+1)
+                            j -= calculateGroupAndGetChange([Operator.Add,Operator.Minus], beginIndex: i+1, endIndex: j+1)
 
-                            oldCount = _tempHistory.count
-                            calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: i+1, endIndex: j+1)
-                            j = j - (oldCount - _tempHistory.count)
                             
-                            oldCount = _tempHistory.count
-                            calculateGroup([Operator.Add,Operator.Minus], beginIndex: i+1, endIndex: j+1)
-                            j = j - (oldCount - _tempHistory.count)
-                            
-                            
-                            if (j + 1 < _tempHistory.count){
-                                _tempHistory[j+1].theOperand = _tempHistory[j].theOperand
-                               _tempHistory.remove(at: j)
+                            if (j + 1 < _tempOperationList.count){
+                                _tempOperationList[j+1].theOperand = _tempOperationList[j].theOperand
+                                _tempOperationList.remove(at: j)
+                                j -= 1
                             }
-                            j = j - 1
-                            
-                            _tempHistory.remove(at: i)
+                                                        
+                            _tempOperationList.remove(at: i)
+                            j -= 1
                             break
                         }
-                        i = i - 1
+                        i -= 1
                     }
                 }
-                j = j + 1
+                j += 1
             }
-            calculateGroup([Operator.Exponent], beginIndex: 0, endIndex: _tempHistory.count)
-            calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: 0, endIndex: _tempHistory.count)
-            calculateGroup([Operator.Add,Operator.Minus], beginIndex: 0, endIndex: _tempHistory.count)
-            rtn = _tempHistory.last!.theOperand
+            calculateGroup([Operator.Exponent], beginIndex: 0, endIndex: _tempOperationList.count)
+            calculateGroup([Operator.Mutiply,Operator.Divide], beginIndex: 0, endIndex: _tempOperationList.count)
+            calculateGroup([Operator.Add,Operator.Minus], beginIndex: 0, endIndex: _tempOperationList.count)
+            rtn = _tempOperationList.last!.theOperand
         }
         return rtn
     }
@@ -206,43 +227,94 @@ class CalCenter
         if let oprtn = self.operationDic[oprtor] {
             switch oprtn{
             case .BinaryOperation( _) :
-                if _history.isEmpty{
+                if _currentOperationList.isEmpty{
                     break
                 }
-                if oprtor == Operator.Point
-                    && (_history.last!.theOperator == Operator.Point
-                        || _history.last!.theOperator == Operator.RightParentheses){
-                    break
+                if oprtor == Operator.Point {                   
+                    if _currentOperationList.count > 1 {
+                        let pre = _currentOperationList[_currentOperationList.count - 2]
+                        if pre.theOperator == Operator.Point
+                            || _currentOperationList.last!.theOperator == Operator.RightParentheses{
+                             break
+                        }
+                    }
                 }
-                if _history.last!.theOperator == nil {
-                    _history[_history.count-1].theOperator = oprtor
-                } else if _history.last!.theOperator == Operator.RightParentheses {
-                    _history.append(OperationInfo(theOperand: nil, theOperator: oprtor))
+                if _currentOperationList.last!.theOperator == Operator.RightParentheses {
+                    _currentOperationList.append(OprationInfo(theOperand: nil, theOperator: oprtor))
+                } else if _currentOperationList.last!.theOperator == nil {
+                    _currentOperationList[_currentOperationList.count-1].theOperator = oprtor
                 }
             case .UnaryOperation(let foo) :
-                if _history.isEmpty{
+                if _currentOperationList.isEmpty{
                     break;
                 }
-                let current = _history.count - 1 - _reverseIndex
-                _history[current].theOperand = foo(_history[current].theOperand!)
+                let current = _currentOperationList.count - 1 - _reverseIndex
+                _currentOperationList[current].theOperand = foo(_currentOperationList[current].theOperand!)
                 
             case .Parentheses:
                 if oprtor == Operator.LeftParentheses {
-                    if (_history.isEmpty
-                        || _history.last!.theOperator == Operator.LeftParentheses
-                        || (_history.last!.theOperator != nil && _history.last!.theOperator != Operator.Point) ) {
+                    if (_currentOperationList.isEmpty
+                        || _currentOperationList.last!.theOperator == Operator.LeftParentheses
+                        || (_currentOperationList.last!.theOperator != nil
+                            && _currentOperationList.last!.theOperator != Operator.Point) ) {
                         _leftParenthesesCount += 1
-                        _history.append(OperationInfo(theOperand: nil, theOperator: oprtor))
+                        _currentOperationList.append(OprationInfo(theOperand: nil, theOperator: oprtor))
                     }
                 } else {
                     if _leftParenthesesCount > 0 {
                         _leftParenthesesCount -= 1
-                        _history[_history.count-1].theOperator = oprtor
+                        let index = _currentOperationList.count-1
+                        if _currentOperationList[index].theOperator != Operator.RightParentheses{
+                            _currentOperationList[index].theOperator = oprtor
+                        } else {
+                            _currentOperationList.append(OprationInfo(theOperand: nil, theOperator: oprtor))
+                        }
                     }
                 }
                 
             }
         }
+    }
+    
+    private func getDoubleString(_ doubleVal:Double) -> String{
+        var  rtn = String (doubleVal)
+        if (rtn.hasSuffix(".0")) {
+            let index = rtn.index(rtn.endIndex, offsetBy: -2)
+            rtn = rtn.substring(to: index )
+        }
+        return rtn
+    }
+    
+    func toString() -> (String, NSRange?) {
+        var txt = ""
+        var i = 0
+        var begin = -1
+        var length = 0
+        for info in _currentOperationList {
+            if let tmp = info.theOperand {
+                let t = getDoubleString(tmp)
+                if (i == self.currentIndex) {
+                    begin = txt.characters.count
+                    length = t.characters.count
+                }
+                txt += t
+            }
+            if let tmp = info.theOperator {
+                txt += tmp.rawValue
+            }
+            
+            i = i + 1
+        }
+        
+        if let tmp = getReselut(){
+            txt += "="
+            txt += getDoubleString(tmp)
+        }
+        var range : NSRange? = nil
+        if (begin > -1) {
+            range = NSRange(location: begin,length: length)
+        }
+        return (txt, range )
     }
     
 }
